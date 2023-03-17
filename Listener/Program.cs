@@ -39,7 +39,7 @@ namespace ServerCore
         static void Main(string[] args)
         {
             // Dns (Domain Name System)
-            string host = Dns.GetHostName();
+            string host = Dns.GetHostName(); //로컬 컴퓨터의 호스트 이름을 가져온다.
             IPHostEntry ipHost = Dns.GetHostEntry(host);
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
