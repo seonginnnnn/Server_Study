@@ -11,41 +11,44 @@ namespace ServerCore
     {
         static Listener _listener = new Listener();
 
-        static void OnAcceptHandler(Socket clientSocket)
+        static void OnAccpetHandler(Socket clientSocket)
         {
             try
             {
-                Session session = new Session();
-                session.Start(clientSocket);
+                // 받는다
+                byte[] recvBuff = new byte[1024];
+                int recvBytes = clientSocket.Receive(recvBuff);
+                string recvData = Encoding.UTF8.GetString(recvBuff, 0, recvBytes);
+                Console.WriteLine($"[From Client] {recvData}");
 
+                // 보낸다
                 byte[] sendBuff = Encoding.UTF8.GetBytes("Welcome to MMORPG Server !");
-                session.Send(sendBuff);
+                clientSocket.Send(sendBuff);
 
-                Thread.Sleep(1000);
-
-                session.Disconnect();
+                //쫒아낸다 
+                clientSocket.Shutdown(SocketShutdown.Both);
+                clientSocket.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-
-           
         }
         static void Main(string[] args)
         {
-            // Dns (Domain Name System)
+            // DNS (Domain Name System)
             string host = Dns.GetHostName();
             IPHostEntry ipHost = Dns.GetHostEntry(host);
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
-            _listener.Init(endPoint, OnAcceptHandler);
-            Console.WriteLine("Listening...");
+                // 문지기 교육
 
+            _listener.Init(endPoint, OnAccpetHandler);
+            Console.WriteLine("Listening...");
             while (true)
             {
-                    
+                ;
             }
         }
     }
